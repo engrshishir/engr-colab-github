@@ -1,3 +1,4 @@
+[![pypi.png](https://i.postimg.cc/nrTbcvNQ/pypi.png)](https://pypi.org/project/engr-colab-github/)
 # GitHub Automation Script
 
 This script automates common GitHub-related operations, including setup, repository management, and file handling.
