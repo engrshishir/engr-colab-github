@@ -4,6 +4,7 @@ from pathlib import Path
 import shutil
 import webbrowser
 from datetime import datetime
+import sys
 
 # Global variables
 token = ""
@@ -24,10 +25,45 @@ def setup():
     """
     global token, user_name, user_email, g
 
+    # Check if PyGithub is installed
+    try:
+        from github import Github
+    except ImportError:
+        print("PyGithub is not installed. Installing PyGithub...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "PyGithub"])
+
+    has_token = (
+        input("Do you already have a GitHub personal access token? (yes/no): ")
+        .strip()
+        .lower()
+    )
+
+    if has_token == "no":
+        print("You can create a GitHub personal access token here:")
+        print("https://github.com/settings/personal-access-tokens")
+        print("After creating the token, please enter it below.")
+
     token = input("Please enter your GitHub personal access token: ").strip()
     g = Github(token)
 
+    # Check if the username and email are already set in Git configuration
     try:
+        user_name = (
+            subprocess.check_output(["git", "config", "--global", "user.name"])
+            .strip()
+            .decode()
+        )
+        user_email = (
+            subprocess.check_output(["git", "config", "--global", "user.email"])
+            .strip()
+            .decode()
+        )
+        print(
+            f"Git is already configured with username: {user_name} and email: {user_email}"
+        )
+    except subprocess.CalledProcessError:
+        # If not configured, ask the user for their details
+        print("Git username and email not set. Please enter them below.")
         user_name = input("Enter your GitHub username: ").strip()
         user_email = input("Enter your GitHub email: ").strip()
 
@@ -35,8 +71,6 @@ def setup():
         subprocess.run(["git", "config", "--global", "user.name", user_name])
         subprocess.run(["git", "config", "--global", "user.email", user_email])
         print(f"Git configured with username: {user_name}, email: {user_email}")
-    except subprocess.CalledProcessError as e:
-        print(f"Error while setting Git configuration: {e}")
 
 
 def create_repo():
@@ -73,7 +107,7 @@ def clone_repo():
         print(f"Repository '{repo_name}' cloned successfully.")
     except subprocess.CalledProcessError as e:
         print(f"Error while cloning the repository: {e}")
-        
+
 
 def delete_path():
     """
@@ -140,7 +174,6 @@ def git_push():
 
     except subprocess.CalledProcessError as e:
         print(f"Error occurred: {e}")
-        
 
 
 def git_Pull():
@@ -151,18 +184,19 @@ def git_Pull():
         print(f"Error occurred while pulling updates: {e}")
 
 
-
 def git_status():
     try:
         subprocess.run(["git", "status"], check=True)
     except subprocess.CalledProcessError as e:
         print(f"Error occurred: {e}")
 
+
 def git_log():
     try:
         subprocess.run(["git", "log"], check=True)
     except subprocess.CalledProcessError as e:
         print(f"Error occurred: {e}")
+
 
 def merge_branch():
     branch_name = input("Enter the branch name to merge: ").strip()
@@ -172,24 +206,21 @@ def merge_branch():
     except subprocess.CalledProcessError as e:
         print(f"Error occurred: {e}")
 
+
 def git_reset():
     try:
         subprocess.run(["git", "reset", "--hard"], check=True)
         print("Working directory reset to the latest commit.")
     except subprocess.CalledProcessError as e:
         print(f"Error occurred: {e}")
-        
 
 
 def stage_specific_path():
     # Ask user for the path to stage
     path = input("Enter the path of the file or folder to stage for commit: ")
-    
+
     try:
         subprocess.run(["git", "add", path], check=True)
         return f"Successfully staged {path}."
     except subprocess.CalledProcessError as e:
         return f"Error staging {path}: {e}"
-
-
-
