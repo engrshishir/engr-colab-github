@@ -53,33 +53,6 @@ def git_commit():
     except subprocess.CalledProcessError:
         print("❌ Commit failed! Ensure changes are staged.")
 
-def git_push():
-    """Pushes committed changes to GitHub based on the active repository from .env."""
-    active_repo = get_active_repo()
-
-    if not active_repo:
-        print("⚠️ No active repository. Please set or switch to a repository.")
-        return
-
-    version = input("🚀 Enter version (e.g., v1): ").strip()
-    commit_message = (
-        f"Version {version}: Pushed on {datetime.now().strftime('%d %b, %Y')}"
-    )
-
-    try:
-        # Stage all changes
-        subprocess.run(["git", "add", "."], check=True)
-
-        # Commit the changes
-        subprocess.run(["git", "commit", "-m", commit_message], check=True)
-
-        # Push changes to the remote repository
-        subprocess.run(["git", "push", "origin", "main"], check=True)
-
-        print(f"✅ Version {version} pushed successfully to {active_repo}!")
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Push failed! Error: {e}")
-
 def git_status():
     """Displays Git status."""
     try:

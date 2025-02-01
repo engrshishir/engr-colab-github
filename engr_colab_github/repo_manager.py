@@ -58,13 +58,10 @@ def create_repo():
 
 
 def clone_repo():
-    """Clones a GitHub repository with error handling."""
-    # Load environment variables directly from the .env file
     load_dotenv()
 
-    # Retrieve the necessary environment variables
     user_name = env_vars.get("GITHUB_USER_NAME")
-    token = env_vars.get("GITHUB_TOKEN")  # GitHub token
+    token = env_vars.get("GITHUB_TOKEN")
 
     active_repo = input("📥 Enter repository name to clone: ").strip()
     clone_url = f"https://{token}@github.com/{user_name}/{active_repo}.git"
@@ -79,12 +76,9 @@ def clone_repo():
         subprocess.run(["git", "clone", clone_url], check=True)
         print(f"✅ Repository '{active_repo}' cloned successfully.")
 
-        # Check if the script is running locally (for example, on Windows)
         if sys.platform == "win32":
-            # Use os.chdir() on Windows or other local systems
             Path(active_repo).resolve()
         else:
-            # Use pathlib for non-local environments (e.g., Google Colab)
             path = Path(active_repo).resolve()
             print(f"Now working in repository '{active_repo}' located at {path}.")
             # Optionally, handle directory changes for other environments
@@ -101,7 +95,6 @@ def clone_repo():
 
 
 def switch_repo():
-    """Switch to a different repository. If not found locally, clone it."""
     global active_repo
 
     active_repo = input("🔄 Enter repository name to switch to: ").strip()
@@ -113,28 +106,23 @@ def switch_repo():
         return  # Exit after cloning since the repo will be set up by clone_repo()
 
     try:
-        # Change to the directory of the repo
         repo_path.chmod(0o755)
         print(f"✅ Switched to repository '{active_repo}'.")
 
-        # Update or create the ACTIVE_REPO entry in the .env file
         env_file_path = Path(__file__).parent.parent / ".env"
         with env_file_path.open("r") as env_file:
             lines = env_file.readlines()
 
-        # Check if ACTIVE_REPO is already in the .env file
         with env_file_path.open("w") as env_file:
             updated = False
             for line in lines:
                 if line.startswith("ACTIVE_REPO="):
-                    # Replace the old ACTIVE_REPO value with the new one
                     env_file.write(f"ACTIVE_REPO={active_repo}\n")
                     updated = True
                 else:
                     env_file.write(line)
 
             if not updated:
-                # If ACTIVE_REPO was not found, append it at the end of the .env file
                 env_file.write(f"\nACTIVE_REPO={active_repo}\n")
 
         print(f"✅ .env file updated with ACTIVE_REPO={active_repo}")

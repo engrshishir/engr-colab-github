@@ -1,7 +1,7 @@
 import sys
 from engr_colab_github.setup import setup
 from engr_colab_github.repo_manager import create_repo, clone_repo, switch_repo
-from engr_colab_github.git_operations import git_add, git_commit, git_push, git_status, git_log, merge_branch
+from engr_colab_github.git_operations import git_add, git_commit, git_push,force_push, git_status, git_log, merge_branch
 from engr_colab_github.utils import author, delete_path
 
 #  
@@ -14,12 +14,13 @@ def main():
         "4": ("Git Add", git_add),
         "5": ("Git Commit", git_commit),
         "6": ("Git Push", git_push),
-        "7": ("Git Status", git_status),
-        "8": ("Git Log", git_log),
-        "9": ("Merge Branch", merge_branch),
-        "10": ("Delete File/Folder", delete_path),
-        "11": ("Open Author LinkedIn", author),
-        "12": ("Exit", sys.exit),
+        "7": ("Force Push", force_push),
+        "8": ("Git Status", git_status),
+        "9": ("Git Log", git_log),
+        "10": ("Merge Branch", merge_branch),
+        "11": ("Delete File/Folder", delete_path),
+        "12": ("Open Author LinkedIn", author),
+        "13": ("Exit", sys.exit),
     }
 
     while True:
