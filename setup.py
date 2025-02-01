@@ -16,6 +16,7 @@ setup(
             'git-add=engr_colab_github.git_operations:git_add',
             'git-commit=engr_colab_github.git_operations:git_commit',
             'git-push=engr_colab_github.git_operations:git_push',
+            'force_push=engr_colab_github.git_operations:force_push',
             'git-status=engr_colab_github.git_operations:git_status',
             'git-log=engr_colab_github.git_operations:git_log',
             'merge-branch=engr_colab_github.git_operations:merge_branch',
