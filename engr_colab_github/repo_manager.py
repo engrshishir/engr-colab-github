@@ -46,7 +46,7 @@ def create_repo():
 
     except Exception as e:
         if "Bad credentials" in str(e):
-            print("❌ Invalid GitHub token! Please check and try again.")
+            print("❌ Invalid GitHub token! Please check and try again. repo_manager.py")
         elif "Requires authentication" in str(e):
             print("❌ You must authenticate using a Personal Access Token (PAT).")
         elif "403" in str(e):

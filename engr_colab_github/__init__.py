@@ -1,6 +1,6 @@
 from .setup import setup
 from .repo_manager import create_repo, clone_repo, switch_repo
-from .git_operations import git_add, git_commit, git_push, git_status, git_log, merge_branch
+from .git_operations import git_add, git_commit, git_push,force_push, git_status, git_log, merge_branch
 from .utils import author, delete_path
 
 __all__ = [
@@ -11,6 +11,7 @@ __all__ = [
     "git_add",
     "git_commit",
     "git_push",
+    "force_push",
     "git_status",
     "git_log",
     "merge_branch",

@@ -15,9 +15,11 @@ env_file_path = Path(__file__).parent.parent / ".env"
 # Retrieve values from the .env file
 active_repo = env_vars.get("ACTIVE_REPO")
 user_name = env_vars.get("GITHUB_USER_NAME")
+active_token = env_vars.get("GITHUB_TOKEN")
+
 
 def get_token():
-    token = env_vars.get("GITHUB_TOKEN")
+    token = active_token
 
     if token:
         print("✅ Found saved GitHub token in .env file.")
@@ -64,10 +66,10 @@ def setup():
 
     try:
         g = Github(token)
-        g.get_user().login  # Validate token
+        g.get_user().login
         print("✅ GitHub authentication successful!")
     except Exception:
-        print("❌ Invalid GitHub token! Please check and try again.")
+        print("❌ Invalid GitHub token! Please check and try again. setup.py")
         sys.exit(1)
 
     # Ensure the username and email are available and set them if not

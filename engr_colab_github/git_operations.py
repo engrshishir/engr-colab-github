@@ -44,8 +44,51 @@ def git_commit():
     except subprocess.CalledProcessError:
         print("❌ Commit failed! Ensure changes are staged.")
 
-
 def git_push():
+    if not active_repo:
+        print("⚠️ No active repository. Please set or switch to a repository.")
+        return
+
+    # Remove .env from the staging area if it has been added
+    try:
+        subprocess.run(["git", "rm", "--cached", ".env"], check=True)
+        print("✅ Removed .env from staging area.")
+    except subprocess.CalledProcessError:
+        print("❌ Failed to remove .env from staging area!")
+
+    # Get the current branch name (main, master, or any other branch)
+    try:
+        branch_result = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        current_branch = branch_result.stdout.strip()
+    except subprocess.CalledProcessError:
+        print("❌ Failed to get current branch name!")
+        return
+
+    # Force push committed changes to the remote repository
+    try:
+        push_result = subprocess.run(
+            ["git", "push", "origin", current_branch, "--force"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        print(
+            f"✅ Force pushed committed changes to the '{current_branch}' branch of '{active_repo}' successfully!"
+        )
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Force push failed!")
+        print(f"Error: {e}")
+        print(f"Standard Output: {e.stdout}")
+        print(f"Standard Error: {e.stderr}")
+
+
+
+def force_push():
     if not active_repo:
         print("⚠️ No active repository. Please set or switch to a repository.")
         return
