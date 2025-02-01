@@ -74,6 +74,13 @@ def git_push():
             print("❌ Failed to commit changes!")
             return
 
+    # Remove .env from the staging area if it has been added
+    try:
+        subprocess.run(["git", "rm", "--cached", ".env"], check=True)
+        print("✅ Removed .env from staging area.")
+    except subprocess.CalledProcessError:
+        print("❌ Failed to remove .env from staging area!")
+
     # Get the current branch name (main or master or any other branch)
     try:
         branch_result = subprocess.run(
@@ -89,7 +96,12 @@ def git_push():
 
     # Force push changes to the remote repository
     try:
-        subprocess.run(["git", "push", "origin", current_branch, "--force"], check=True)
+        push_result = subprocess.run(
+            ["git", "push", "origin", current_branch, "--force"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
         print(
             f"✅ Force pushed changes to the '{current_branch}' branch of '{active_repo}' successfully!"
         )
