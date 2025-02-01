@@ -5,24 +5,16 @@ import os
 from dotenv import load_dotenv, set_key, dotenv_values
 import sys
 
-# Load environment variables from .env file
-load_dotenv()
-
 env_vars = dotenv_values(
     Path(__file__).parent.parent / ".env"
 )  
+env_file_path = Path(__file__).parent.parent / ".env"
 # Retrieve values from the .env file
 active_repo = env_vars.get("ACTIVE_REPO")
 user_name = env_vars.get("GITHUB_USER_NAME")
 
 
-def get_active_repo():
-    return active_repo
-
 def git_add():
-    """Adds a file or folder to the staging area based on the active repository from .env."""
-    active_repo = get_active_repo()
-
     if not active_repo:
         print("⚠️ No active repository. Please set or switch to a repository.")
         return
@@ -41,6 +33,9 @@ def git_add():
     except subprocess.CalledProcessError:
         print(f"❌ Failed to add '{path}' to the staging area.")
 
+
+
+
 def git_commit():
     """Commits staged changes with a message."""
     message = input("📝 Enter commit message: ").strip()
@@ -54,31 +49,46 @@ def git_commit():
         print("❌ Commit failed! Ensure changes are staged.")
 
 def git_push():
-    """Pushes committed changes to GitHub based on the active repository from .env."""
-    active_repo = get_active_repo()
-
     if not active_repo:
         print("⚠️ No active repository. Please set or switch to a repository.")
         return
 
-    version = input("🚀 Enter version (e.g., v1): ").strip()
-    commit_message = (
-        f"Version {version}: Pushed on {datetime.now().strftime('%d %b, %Y')}"
-    )
-
+    # Check if there are any uncommitted changes first
+    status_result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+    
+    # if status_result.stdout:
+    #     print("⚠️ There are uncommitted changes. Commit them first.")
+    #     return
+    
+    # Check if the local branch is ahead of the remote branch
     try:
-        # Stage all changes
-        subprocess.run(["git", "add", "."], check=True)
+        # Check for unpushed commits
+        log_result = subprocess.run(["git", "log", "origin/master..HEAD", "--oneline"], capture_output=True, text=True)
+        
+        # if log_result.stdout.strip() == "":
+        #     print("✅ No new commits to push.")
+        #     return
+        
+        version = input("🚀 Enter version (e.g., v1): ").strip()
+        commit_message = f"Version {version}: Pushed on {datetime.now().strftime('%d %b, %Y')}"
 
-        # Commit the changes
-        subprocess.run(["git", "commit", "-m", commit_message], check=True)
+        try:
+            # Stage all changes
+            subprocess.run(["git", "add", "."], check=True)
 
-        # Push changes to the remote repository
-        subprocess.run(["git", "push", "origin", "main"], check=True)
+            # Commit the changes
+            subprocess.run(["git", "commit", "-m", commit_message], check=True)
 
-        print(f"✅ Version {version} pushed successfully to {active_repo}!")
+            # Push changes to the remote repository
+            subprocess.run(["git", "push", "origin", "main"], check=True)
+
+            print(f"✅ Version {version} pushed successfully to {active_repo}!")
+        except subprocess.CalledProcessError as e:
+            print(f"❌ Push failed! Error: {e}")
+
     except subprocess.CalledProcessError as e:
-        print(f"❌ Push failed! Error: {e}")
+        print(f"❌ Failed to check for unpushed commits! Error: {e}")
+
 
 def git_status():
     """Displays Git status."""
