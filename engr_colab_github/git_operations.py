@@ -94,7 +94,10 @@ def git_push():
             f"✅ Force pushed changes to the '{current_branch}' branch of '{active_repo}' successfully!"
         )
     except subprocess.CalledProcessError as e:
-        print(f"❌ Force push failed! Error: {e}")
+        print(f"❌ Force push failed!")
+        print(f"Error: {e}")
+        print(f"Standard Output: {e.stdout}")
+        print(f"Standard Error: {e.stderr}")
 
 
 def git_status():
