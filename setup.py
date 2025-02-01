@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='engr_colab_github',
-    version='0.6',  # Update version as needed
+    version='0.9',
     packages=find_packages(),
     install_requires=[
         'PyGithub',

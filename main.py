@@ -4,16 +4,7 @@ from engr_colab_github.repo_manager import create_repo, clone_repo, switch_repo
 from engr_colab_github.git_operations import git_add, git_commit, git_push, git_status, git_log, merge_branch
 from engr_colab_github.utils import author, delete_path
 
-def is_colab():
-    """Check if running in Google Colab."""
-    try:
-        import google.colab
-        return True
-    except ImportError:
-        return False
-
 def main():
-    """Interactive CLI for GitHub management."""
     setup()
 
     functions = {
