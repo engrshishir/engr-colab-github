@@ -80,7 +80,7 @@ def git_push():
             subprocess.run(["git", "commit", "-m", commit_message], check=True)
 
             # Push changes to the remote repository
-            subprocess.run(["git", "push", "origin", "main"], check=True)
+            subprocess.run(["git", "push", "origin", "master"], check=True)
 
             print(f"✅ Version {version} pushed successfully to {active_repo}!")
         except subprocess.CalledProcessError as e:
